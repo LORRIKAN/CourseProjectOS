@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Specialized;
 
 namespace CourseProjectOS
 {
@@ -15,19 +16,45 @@ namespace CourseProjectOS
     {
         int CurrentStep { get; set; }
 
+        bool CalculationCompleted { get; set; }
+
         int IndexOfPageNumClmn { get; set; }
 
         int IndexOfPageClmn { get; set; }
 
-        Dictionary<int, Step> Steps { get; set; }
+        List<RichTextBox> Steps { get; set; } = new List<RichTextBox>();
+
+        Random RandomNumGenerator { get; set; } = new Random();
 
         public MainForm()
         {
             InitializeComponent();
 
-            IndexOfPageNumClmn = 0;
-            IndexOfPageClmn = 1;
+            IndexOfPageNumClmn = 1;
+            IndexOfPageClmn = 0;
             CurrentStep = 0;
+        }
+
+        private void GridViewsEnabled(bool enabled)
+        {
+            startConditionDataGridView.Enabled = enabled;
+            pagesToInsertDataGridView.Enabled = enabled;
+        }
+
+        private void CheckAndEnableButts()
+        {
+            if (startConditionDataGridView.Rows.Count != 1 && pagesToInsertDataGridView.Rows.Count != 1)
+            {
+                nextStepButt.Enabled = true;
+                executeButt.Enabled = true;
+                resetButt.Enabled = true;
+            }
+            else
+            {
+                nextStepButt.Enabled = false;
+                executeButt.Enabled = false;
+                resetButt.Enabled = false;
+            }
         }
 
         private void DataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -42,6 +69,8 @@ namespace CourseProjectOS
                 var gridView = sender as DataGridView;
 
                 gridView[IndexOfPageNumClmn, e.RowIndex].Value = e.RowIndex + 1;
+
+                CheckAndEnableButts();
             }
             else if (!string.IsNullOrEmpty(formattedValue))
             {
@@ -57,52 +86,92 @@ namespace CourseProjectOS
 
             for (int i = e.Row.Index; i < gridView.Rows.Count - 1; i++)
             {
-                var oldPageNum = (int)gridView[IndexOfPageNumClmn, i].Value;
+                var oldPageNum = int.Parse(gridView[IndexOfPageNumClmn, i].Value as string);
                 gridView[IndexOfPageNumClmn, i].Value = oldPageNum - 1;
             }
+
+            CheckAndEnableButts();
         }
 
         private void ProcessCalculating()
         {
             var memory = new Queue<int>();
 
-            foreach (DataGridViewRow row in startConditionDataGridView.Rows)
+            for (int i = 0; i < startConditionDataGridView.Rows.Count - 1; i++)
             {
-                int page = (int)row.Cells[IndexOfPageClmn].Value;
+                int page = int.Parse(startConditionDataGridView[IndexOfPageClmn, i].Value as string);
                 memory.Enqueue(page);
             }
 
-            for (int i = 0; i < pagesToInsertDataGridView.Rows.Count; i++)
+            string startCondition = string.Join(" ", memory);
+            var startConditionTextBox = new RichTextBox
             {
-                var pageToInsert = (int)pagesToInsertDataGridView[IndexOfPageClmn, i].Value;
-                bool pageFoundInMemory = false;
-                var step = new Step
-                {
-                    OutputString = new Dictionary<string, Color>()
-                };
+                Text = startCondition,
+                Size = new Size(265, 30),
+                Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold),
+                Dock = DockStyle.Top,
+                ReadOnly = true
+            };
+            startConditionTextBox.ContentsResized += ResizeRichTextBox;
+            algorithmStepsPanel.Controls.Add(startConditionTextBox);
 
+            for (int i = 0; i < pagesToInsertDataGridView.Rows.Count - 1; i++)
+            {
+                var pageToInsert = int.Parse(pagesToInsertDataGridView[IndexOfPageClmn, i].Value as string);
+                bool pageFoundInMemory = false;
+
+                var stepTextBox = new RichTextBox
+                {
+                    Size = new Size(265, 30),
+                    Font = new Font("Microsoft Sans Serif", 10, FontStyle.Bold),
+                    Dock = DockStyle.Top,
+                    ReadOnly = true
+                };
+                stepTextBox.ContentsResized += ResizeRichTextBox;
+
+                stepTextBox.SelectedText = (i + 1) + ". ";
+
+                Color color;
                 foreach (int existingPage in memory)
                 {
                     if (existingPage == pageToInsert && !pageFoundInMemory)
                     {
                         pageFoundInMemory = true;
-                        step.OutputString.Add(existingPage.ToString() + " ", Color.Green);
+                        color = Color.Green;
                     }
                     else
                     {
-                        step.OutputString.Add(existingPage.ToString() + " ", Color.Black);
+                        color = Color.Black;
                     }
+
+                    stepTextBox.SelectionColor = color;
+                    stepTextBox.SelectedText = existingPage + " ";
                 }
-                bool pageFault = !pageFoundInMemory;
-                step.PageFault = pageFault;
 
-                if (pageFault)
-                    step.OutputString.Add("<- p", Color.Black);
+                stepTextBox.SelectionColor = Color.Black;
+                stepTextBox.SelectedText = "<- " + pageToInsert;
 
-                Steps.Add(i, step);
+                if (!pageFoundInMemory)
+                {
+                    stepTextBox.Select(((i + 1) + ". ").Length, memory.Peek().ToString().Length);
+                    stepTextBox.SelectionColor = Color.Red;
+                    stepTextBox.Select(stepTextBox.Text.Length, 0);
+                    stepTextBox.SelectionColor = Color.Red;
+                    stepTextBox.SelectedText = " p";
+
+                    memory.Dequeue();
+                    memory.Enqueue(pageToInsert);
+                }
+
+                Steps.Add(stepTextBox);
             }
 
+            CalculationCompleted = true;
+        }
 
+        private void ResizeRichTextBox(object sender, ContentsResizedEventArgs e)
+        {
+            ((RichTextBox)sender).Height = e.NewRectangle.Height + 5;
         }
 
         private void DataGridView_KeyDown(object sender, KeyEventArgs e)
@@ -112,32 +181,112 @@ namespace CourseProjectOS
 
             var gridView = sender as DataGridView;
             var selectedRow = gridView.SelectedCells[0].OwningRow;
-
-            gridView.Rows.Remove(selectedRow);
-        }
-    }
-
-    static class RichTextBoxExtension
-    {
-        static readonly string NL = Environment.NewLine;
-        public static void AppendStep(this RichTextBox richTextBox, Step step)
-        {
-            foreach (KeyValuePair<string, Color> strWithColor in step.OutputString)
+            
+            if (!selectedRow.IsNewRow)
             {
-                richTextBox.SelectionColor = strWithColor.Value;
-                richTextBox.SelectedText = strWithColor.Key;
+                gridView.Rows.Remove(selectedRow);
+                CheckAndEnableButts();
+            }
+        }
 
-                step.NumberOfUndosInRichTextBox++;
+        private void nextStepButt_Click(object sender, EventArgs e)
+        {
+            GridViewsEnabled(false);
+            undoButt.Enabled = true;
+
+            if (!CalculationCompleted)
+                ProcessCalculating();
+
+            algorithmStepsPanel.Controls.Add(Steps[CurrentStep++]);
+
+            if (CurrentStep == Steps.Count)
+            {
+                executeButt.Enabled = false;
+                nextStepButt.Enabled = false;
+                resetButt.Enabled = true;
+            }
+        }
+
+        private void undoButt_Click(object sender, EventArgs e)
+        {
+            nextStepButt.Enabled = true;
+            executeButt.Enabled = true;
+            algorithmStepsPanel.Controls.Remove(Steps[--CurrentStep]);
+
+            if (CurrentStep == 0)
+            {
+                undoButt.Enabled = false;
+                resetButt.Enabled = true;
+                GridViewsEnabled(true);
+            }
+        }
+
+        private void resetButt_Click(object sender, EventArgs e)
+        {
+            resetButt.Enabled = false;
+            undoButt.Enabled = false;
+            nextStepButt.Enabled = false;
+            executeButt.Enabled = false;
+
+            startConditionDataGridView.Rows.Clear();
+            pagesToInsertDataGridView.Rows.Clear();
+
+            Steps.Clear();
+            algorithmStepsPanel.Controls.Clear();
+
+            algorithmStepsPanel.Controls.Clear();
+
+            CurrentStep = 0;
+
+            CalculationCompleted = false;
+        }
+
+        private void executeButt_Click(object sender, EventArgs e)
+        {
+            while (executeButt.Enabled)
+                nextStepButt_Click(sender, e);
+        }
+
+        private void randButt_Click(object sender, EventArgs e)
+        {
+            resetButt_Click(sender, e);
+            for (int i = 0; i < 5; i++)
+                startConditionDataGridView.Rows.Add(RandomNumGenerator.Next(0, 16).ToString(), i + 1);
+
+            for (int i = 0; i < 16; i++)
+                pagesToInsertDataGridView.Rows.Add(RandomNumGenerator.Next(0, 16).ToString(), i + 1);
+
+            CheckAndEnableButts();
+        }
+
+        private void importMenuStripItem_Click(object sender, EventArgs e)
+        {
+            resetButt_Click(null, null);
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string[] rawStr = File.ReadAllLines(openFileDialog.FileName);
+
+                foreach (string str in rawStr.Where(str => !str.Contains("Ход алгоритма")))
+                {
+                    string[] values = str.Split(',');
+
+                    startConditionDataGridView.Rows.Add(values[0], values[1]);
+                    pagesToInsertDataGridView.Rows.Add(values[2], values[4]);
+                }
             }
 
-            richTextBox.AppendText(NL);
-            step.NumberOfUndosInRichTextBox++;
+            ProcessCalculating();
         }
 
-        public static void UndoLastStep(this RichTextBox richTextBox, Step step)
+        private void exportDataMenuStripItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < step.NumberOfUndosInRichTextBox; i++)
-                richTextBox.Undo();
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                using (var streamWriter = new StreamWriter(openFileDialog.FileName))
+                {
+
+                }
+            }
         }
     }
 }
