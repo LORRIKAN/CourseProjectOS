@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Specialized;
+using ClosedXML.Excel;
 
 namespace CourseProjectOS
 {
@@ -62,7 +63,7 @@ namespace CourseProjectOS
             if (e.ColumnIndex != IndexOfPageClmn)
                 return;
 
-            var formattedValue = e.FormattedValue as string;
+            var formattedValue = e.FormattedValue.ToString();
 
             if (uint.TryParse(formattedValue, out uint _))
             {
@@ -86,7 +87,7 @@ namespace CourseProjectOS
 
             for (int i = e.Row.Index; i < gridView.Rows.Count - 1; i++)
             {
-                var oldPageNum = int.Parse(gridView[IndexOfPageNumClmn, i].Value as string);
+                var oldPageNum = int.Parse(gridView[IndexOfPageNumClmn, i].Value.ToString());
                 gridView[IndexOfPageNumClmn, i].Value = oldPageNum - 1;
             }
 
@@ -99,7 +100,7 @@ namespace CourseProjectOS
 
             for (int i = 0; i < startConditionDataGridView.Rows.Count - 1; i++)
             {
-                int page = int.Parse(startConditionDataGridView[IndexOfPageClmn, i].Value as string);
+                int page = int.Parse(startConditionDataGridView[IndexOfPageClmn, i].Value.ToString());
                 memory.Enqueue(page);
             }
 
@@ -113,11 +114,11 @@ namespace CourseProjectOS
                 ReadOnly = true
             };
             startConditionTextBox.ContentsResized += ResizeRichTextBox;
-            algorithmStepsPanel.Controls.Add(startConditionTextBox);
+            Steps.Add(startConditionTextBox);
 
             for (int i = 0; i < pagesToInsertDataGridView.Rows.Count - 1; i++)
             {
-                var pageToInsert = int.Parse(pagesToInsertDataGridView[IndexOfPageClmn, i].Value as string);
+                var pageToInsert = int.Parse(pagesToInsertDataGridView[IndexOfPageClmn, i].Value.ToString());
                 bool pageFoundInMemory = false;
 
                 var stepTextBox = new RichTextBox
@@ -181,7 +182,7 @@ namespace CourseProjectOS
 
             var gridView = sender as DataGridView;
             var selectedRow = gridView.SelectedCells[0].OwningRow;
-            
+
             if (!selectedRow.IsNewRow)
             {
                 gridView.Rows.Remove(selectedRow);
@@ -189,7 +190,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void nextStepButt_Click(object sender, EventArgs e)
+        private void NextStepButt_Click(object sender, EventArgs e)
         {
             GridViewsEnabled(false);
             undoButt.Enabled = true;
@@ -207,7 +208,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void undoButt_Click(object sender, EventArgs e)
+        private void UndoButt_Click(object sender, EventArgs e)
         {
             nextStepButt.Enabled = true;
             executeButt.Enabled = true;
@@ -221,7 +222,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void resetButt_Click(object sender, EventArgs e)
+        private void ResetButt_Click(object sender, EventArgs e)
         {
             resetButt.Enabled = false;
             undoButt.Enabled = false;
@@ -230,6 +231,8 @@ namespace CourseProjectOS
 
             startConditionDataGridView.Rows.Clear();
             pagesToInsertDataGridView.Rows.Clear();
+            startConditionDataGridView.Enabled = true;
+            pagesToInsertDataGridView.Enabled = true;
 
             Steps.Clear();
             algorithmStepsPanel.Controls.Clear();
@@ -241,15 +244,15 @@ namespace CourseProjectOS
             CalculationCompleted = false;
         }
 
-        private void executeButt_Click(object sender, EventArgs e)
+        private void ExecuteButt_Click(object sender, EventArgs e)
         {
             while (executeButt.Enabled)
-                nextStepButt_Click(sender, e);
+                NextStepButt_Click(sender, e);
         }
 
-        private void randButt_Click(object sender, EventArgs e)
+        private void RandButt_Click(object sender, EventArgs e)
         {
-            resetButt_Click(sender, e);
+            ResetButt_Click(sender, e);
             for (int i = 0; i < 5; i++)
                 startConditionDataGridView.Rows.Add(RandomNumGenerator.Next(0, 16).ToString(), i + 1);
 
@@ -259,34 +262,113 @@ namespace CourseProjectOS
             CheckAndEnableButts();
         }
 
-        private void importMenuStripItem_Click(object sender, EventArgs e)
+        private void ImportMenuStripItem_Click(object sender, EventArgs e)
         {
-            resetButt_Click(null, null);
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string[] rawStr = File.ReadAllLines(openFileDialog.FileName);
+                ResetButt_Click(null, null);
 
-                foreach (string str in rawStr.Where(str => !str.Contains("Ход алгоритма")))
+                using (var wb = new XLWorkbook(openFileDialog.FileName))
                 {
-                    string[] values = str.Split(',');
+                    IXLWorksheet ws = wb.Worksheets.First();
+                    for (int i = 0; ; i++)
+                    {
+                        try
+                        {
+                            startConditionDataGridView.Rows.Add(int.Parse(ws.Cell(i + 1, 1).Value.ToString()),
+                                int.Parse(ws.Cell(i + 1, 2).Value.ToString()));
+                        }
+                        catch
+                        {
+                            break;
+                        }
+                    }
 
-                    startConditionDataGridView.Rows.Add(values[0], values[1]);
-                    pagesToInsertDataGridView.Rows.Add(values[2], values[4]);
+                    for (int i = 0; ; i++)
+                    {
+                        try
+                        {
+                            pagesToInsertDataGridView.Rows.Add(int.Parse(ws.Cell(i + 1, 3).Value.ToString()),
+                                int.Parse(ws.Cell(i + 1, 4).Value.ToString()));
+                        }
+                        catch
+                        {
+                            break;
+                        }
+                    }
                 }
             }
-
-            ProcessCalculating();
+            CheckAndEnableButts();
         }
 
-        private void exportDataMenuStripItem_Click(object sender, EventArgs e)
+        private void ExportDataMenuStripItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                using (var streamWriter = new StreamWriter(openFileDialog.FileName))
-                {
-
-                }
+                ExportDataFunc();
+                MessageBox.Show("Данные сохранены.");
             }
+        }
+
+        private void ExportDataAndResultMenuStripItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (!CalculationCompleted)
+                    ProcessCalculating();
+
+                int lastModifiedCell = ExportDataFunc();
+
+                using (var wb = new XLWorkbook(saveFileDialog.FileName))
+                {
+                    IXLWorksheet ws = wb.Worksheets.First();
+
+                    lastModifiedCell++;
+                    ws.Cell(lastModifiedCell, 1).Value = "Ход алгоритма";
+                    lastModifiedCell++;
+
+                    for (int i = 0; i < Steps.Count; i++)
+                    {
+                        ws.Cell(lastModifiedCell + i, 1).Value = Steps[i].Text;
+                    }
+
+                    wb.Save();
+                }
+
+                MessageBox.Show("Данные сохранены.");
+            }
+        }
+
+        private int ExportDataFunc()
+        {
+            if (startConditionDataGridView.RowCount == 1 || pagesToInsertDataGridView.RowCount == 1)
+            {
+                MessageBox.Show("Таблицы пусты, экспортировать нечего.");
+                return 0;
+            }
+
+            int lastModifiedCell;
+
+            using (var wb = new XLWorkbook())
+            {
+                IXLWorksheet ws = wb.AddWorksheet();
+
+                for (int i = 1; i < startConditionDataGridView.RowCount; i++)
+                {
+                    ws.Cell(i, 1).Value = startConditionDataGridView[0, i - 1].Value;
+                    ws.Cell(i, 2).Value = startConditionDataGridView[1, i - 1].Value;
+                }
+
+                for (int i = 1; i < pagesToInsertDataGridView.RowCount; i++)
+                {
+                    ws.Cell(i, 3).Value = pagesToInsertDataGridView[0, i - 1].Value;
+                    ws.Cell(i, 4).Value = pagesToInsertDataGridView[1, i - 1].Value;
+                }
+                lastModifiedCell = Math.Max(startConditionDataGridView.RowCount, pagesToInsertDataGridView.RowCount);
+                wb.SaveAs(saveFileDialog.FileName);
+            }
+
+            return lastModifiedCell;
         }
     }
 }

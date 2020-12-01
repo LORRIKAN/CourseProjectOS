@@ -48,6 +48,7 @@
             this.importMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportDataMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportDataAndResultMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.startConditionDataGridView)).BeginInit();
@@ -62,9 +63,9 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.startConditionDataGridView);
-            this.groupBox1.Location = new System.Drawing.Point(290, 102);
+            this.groupBox1.Location = new System.Drawing.Point(290, 111);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(485, 428);
+            this.groupBox1.Size = new System.Drawing.Size(485, 511);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Начальное состояние";
@@ -86,7 +87,7 @@
             this.startConditionDataGridView.RowHeadersWidth = 62;
             this.startConditionDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.startConditionDataGridView.RowTemplate.Height = 28;
-            this.startConditionDataGridView.Size = new System.Drawing.Size(479, 403);
+            this.startConditionDataGridView.Size = new System.Drawing.Size(479, 486);
             this.startConditionDataGridView.TabIndex = 0;
             this.startConditionDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridView_CellValidating);
             this.startConditionDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridView_UserDeletingRow);
@@ -112,9 +113,9 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.pagesToInsertDataGridView);
-            this.groupBox2.Location = new System.Drawing.Point(781, 102);
+            this.groupBox2.Location = new System.Drawing.Point(781, 111);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(485, 428);
+            this.groupBox2.Size = new System.Drawing.Size(485, 511);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Страницы для вставки";
@@ -136,7 +137,7 @@
             this.pagesToInsertDataGridView.RowHeadersWidth = 62;
             this.pagesToInsertDataGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.pagesToInsertDataGridView.RowTemplate.Height = 28;
-            this.pagesToInsertDataGridView.Size = new System.Drawing.Size(479, 403);
+            this.pagesToInsertDataGridView.Size = new System.Drawing.Size(479, 486);
             this.pagesToInsertDataGridView.TabIndex = 0;
             this.pagesToInsertDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridView_CellValidating);
             this.pagesToInsertDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridView_UserDeletingRow);
@@ -160,46 +161,46 @@
             // nextStepButt
             // 
             this.nextStepButt.Enabled = false;
-            this.nextStepButt.Location = new System.Drawing.Point(124, 27);
+            this.nextStepButt.Location = new System.Drawing.Point(124, 36);
             this.nextStepButt.Name = "nextStepButt";
             this.nextStepButt.Size = new System.Drawing.Size(115, 69);
             this.nextStepButt.TabIndex = 3;
             this.nextStepButt.Text = "Следующий шаг";
             this.nextStepButt.UseVisualStyleBackColor = true;
-            this.nextStepButt.Click += new System.EventHandler(this.nextStepButt_Click);
+            this.nextStepButt.Click += new System.EventHandler(this.NextStepButt_Click);
             // 
             // undoButt
             // 
             this.undoButt.Enabled = false;
-            this.undoButt.Location = new System.Drawing.Point(3, 27);
+            this.undoButt.Location = new System.Drawing.Point(3, 36);
             this.undoButt.Name = "undoButt";
             this.undoButt.Size = new System.Drawing.Size(115, 69);
             this.undoButt.TabIndex = 4;
             this.undoButt.Text = "Назад";
             this.undoButt.UseVisualStyleBackColor = true;
-            this.undoButt.Click += new System.EventHandler(this.undoButt_Click);
+            this.undoButt.Click += new System.EventHandler(this.UndoButt_Click);
             // 
             // executeButt
             // 
             this.executeButt.Enabled = false;
-            this.executeButt.Location = new System.Drawing.Point(245, 26);
+            this.executeButt.Location = new System.Drawing.Point(245, 36);
             this.executeButt.Name = "executeButt";
             this.executeButt.Size = new System.Drawing.Size(115, 69);
             this.executeButt.TabIndex = 6;
             this.executeButt.Text = "Выполнить";
             this.executeButt.UseVisualStyleBackColor = true;
-            this.executeButt.Click += new System.EventHandler(this.executeButt_Click);
+            this.executeButt.Click += new System.EventHandler(this.ExecuteButt_Click);
             // 
             // resetButt
             // 
             this.resetButt.Enabled = false;
-            this.resetButt.Location = new System.Drawing.Point(784, 27);
+            this.resetButt.Location = new System.Drawing.Point(781, 36);
             this.resetButt.Name = "resetButt";
             this.resetButt.Size = new System.Drawing.Size(115, 69);
             this.resetButt.TabIndex = 5;
             this.resetButt.Text = "Сброс";
             this.resetButt.UseVisualStyleBackColor = true;
-            this.resetButt.Click += new System.EventHandler(this.resetButt_Click);
+            this.resetButt.Click += new System.EventHandler(this.ResetButt_Click);
             // 
             // groupBox
             // 
@@ -207,9 +208,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox.Controls.Add(this.algorithmStepsPanel);
-            this.groupBox.Location = new System.Drawing.Point(3, 102);
+            this.groupBox.Location = new System.Drawing.Point(3, 111);
             this.groupBox.Name = "groupBox";
-            this.groupBox.Size = new System.Drawing.Size(281, 428);
+            this.groupBox.Size = new System.Drawing.Size(281, 511);
             this.groupBox.TabIndex = 2;
             this.groupBox.TabStop = false;
             this.groupBox.Text = "Ход алгоритма";
@@ -220,18 +221,18 @@
             this.algorithmStepsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.algorithmStepsPanel.Location = new System.Drawing.Point(3, 22);
             this.algorithmStepsPanel.Name = "algorithmStepsPanel";
-            this.algorithmStepsPanel.Size = new System.Drawing.Size(275, 403);
+            this.algorithmStepsPanel.Size = new System.Drawing.Size(275, 486);
             this.algorithmStepsPanel.TabIndex = 0;
             // 
             // randButt
             // 
-            this.randButt.Location = new System.Drawing.Point(657, 27);
+            this.randButt.Location = new System.Drawing.Point(660, 36);
             this.randButt.Name = "randButt";
             this.randButt.Size = new System.Drawing.Size(115, 69);
             this.randButt.TabIndex = 7;
             this.randButt.Text = "Заполнить случайно";
             this.randButt.UseVisualStyleBackColor = true;
-            this.randButt.Click += new System.EventHandler(this.randButt_Click);
+            this.randButt.Click += new System.EventHandler(this.RandButt_Click);
             // 
             // menuStrip
             // 
@@ -258,26 +259,31 @@
             // importMenuStripItem
             // 
             this.importMenuStripItem.Name = "importMenuStripItem";
-            this.importMenuStripItem.Size = new System.Drawing.Size(410, 34);
-            this.importMenuStripItem.Text = "Импорт из csv...";
-            this.importMenuStripItem.Click += new System.EventHandler(this.importMenuStripItem_Click);
+            this.importMenuStripItem.Size = new System.Drawing.Size(423, 34);
+            this.importMenuStripItem.Text = "Импорт из excel...";
+            this.importMenuStripItem.Click += new System.EventHandler(this.ImportMenuStripItem_Click);
             // 
             // exportDataMenuStripItem
             // 
             this.exportDataMenuStripItem.Name = "exportDataMenuStripItem";
-            this.exportDataMenuStripItem.Size = new System.Drawing.Size(410, 34);
-            this.exportDataMenuStripItem.Text = "Экспорт данных в csv...";
-            this.exportDataMenuStripItem.Click += new System.EventHandler(this.exportDataMenuStripItem_Click);
+            this.exportDataMenuStripItem.Size = new System.Drawing.Size(423, 34);
+            this.exportDataMenuStripItem.Text = "Экспорт данных в excel...";
+            this.exportDataMenuStripItem.Click += new System.EventHandler(this.ExportDataMenuStripItem_Click);
             // 
             // exportDataAndResultMenuStripItem
             // 
             this.exportDataAndResultMenuStripItem.Name = "exportDataAndResultMenuStripItem";
-            this.exportDataAndResultMenuStripItem.Size = new System.Drawing.Size(410, 34);
-            this.exportDataAndResultMenuStripItem.Text = "Экспорт данных и результата в csv...";
+            this.exportDataAndResultMenuStripItem.Size = new System.Drawing.Size(423, 34);
+            this.exportDataAndResultMenuStripItem.Text = "Экспорт данных и результата в excel...";
+            this.exportDataAndResultMenuStripItem.Click += new System.EventHandler(this.ExportDataAndResultMenuStripItem_Click);
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.Filter = "Excel files|*.xlsx";
             // 
             // openFileDialog
             // 
-            this.openFileDialog.Filter = "CSV|*.csv";
+            this.openFileDialog.Filter = "Excel files|*.xlsx";
             // 
             // MainForm
             // 
@@ -296,6 +302,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
             this.Text = "Симуляция алгоритма FIFO";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.startConditionDataGridView)).EndInit();
             this.groupBox2.ResumeLayout(false);
@@ -330,6 +337,7 @@
         private System.Windows.Forms.ToolStripMenuItem importMenuStripItem;
         private System.Windows.Forms.ToolStripMenuItem exportDataMenuStripItem;
         private System.Windows.Forms.ToolStripMenuItem exportDataAndResultMenuStripItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }
