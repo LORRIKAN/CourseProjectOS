@@ -5,12 +5,13 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
-[assembly: AssemblyTitle("CourseProjectOS")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Визуализация алгоритма FIFO")]
+[assembly: AssemblyDescription("Данная программа визуализирует работу алгоритма FIFO с задаваемыми пользователем номерами страниц. " +
+    "Страницы можно задавать вручную, либо случайно, нажав соответствующую кнопку, либо загрузить из excel файла.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CourseProjectOS")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCompany("Студент группы 485 Зобнин Илья")]
+[assembly: AssemblyProduct("Визуализация алгоритма FIFO")]
+[assembly: AssemblyCopyright("Free license 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

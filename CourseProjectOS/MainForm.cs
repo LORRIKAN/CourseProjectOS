@@ -58,7 +58,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void DataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DataGridViewCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (e.ColumnIndex != IndexOfPageClmn)
                 return;
@@ -81,7 +81,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void DataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        private void DataGridViewUserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             var gridView = sender as DataGridView;
 
@@ -175,7 +175,7 @@ namespace CourseProjectOS
             ((RichTextBox)sender).Height = e.NewRectangle.Height + 5;
         }
 
-        private void DataGridView_KeyDown(object sender, KeyEventArgs e)
+        private void DataGridViewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Delete && e.KeyCode != Keys.Back)
                 return;
@@ -190,7 +190,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void NextStepButt_Click(object sender, EventArgs e)
+        private void NextStepButtClick(object sender, EventArgs e)
         {
             GridViewsEnabled(false);
             undoButt.Enabled = true;
@@ -208,7 +208,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void UndoButt_Click(object sender, EventArgs e)
+        private void UndoButtClick(object sender, EventArgs e)
         {
             nextStepButt.Enabled = true;
             executeButt.Enabled = true;
@@ -222,7 +222,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void ResetButt_Click(object sender, EventArgs e)
+        private void ResetButtClick(object sender, EventArgs e)
         {
             resetButt.Enabled = false;
             undoButt.Enabled = false;
@@ -244,15 +244,15 @@ namespace CourseProjectOS
             CalculationCompleted = false;
         }
 
-        private void ExecuteButt_Click(object sender, EventArgs e)
+        private void ExecuteButtClick(object sender, EventArgs e)
         {
             while (executeButt.Enabled)
-                NextStepButt_Click(sender, e);
+                NextStepButtClick(sender, e);
         }
 
-        private void RandButt_Click(object sender, EventArgs e)
+        private void RandButtClick(object sender, EventArgs e)
         {
-            ResetButt_Click(sender, e);
+            ResetButtClick(sender, e);
             for (int i = 0; i < 5; i++)
                 startConditionDataGridView.Rows.Add(RandomNumGenerator.Next(0, 16).ToString(), i + 1);
 
@@ -262,11 +262,11 @@ namespace CourseProjectOS
             CheckAndEnableButts();
         }
 
-        private void ImportMenuStripItem_Click(object sender, EventArgs e)
+        private void ImportMenuStripItemClick(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                ResetButt_Click(null, null);
+                ResetButtClick(null, null);
 
                 using (var wb = new XLWorkbook(openFileDialog.FileName))
                 {
@@ -301,7 +301,7 @@ namespace CourseProjectOS
             CheckAndEnableButts();
         }
 
-        private void ExportDataMenuStripItem_Click(object sender, EventArgs e)
+        private void ExportDataMenuStripItemClick(object sender, EventArgs e)
         {
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -310,7 +310,7 @@ namespace CourseProjectOS
             }
         }
 
-        private void ExportDataAndResultMenuStripItem_Click(object sender, EventArgs e)
+        private void ExportDataAndResultMenuStripItemClick(object sender, EventArgs e)
         {
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -369,6 +369,16 @@ namespace CourseProjectOS
             }
 
             return lastModifiedCell;
+        }
+
+        private void ExitButtClick(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void AboutProgramButtClick(object sender, EventArgs e)
+        {
+            new AboutBox().Show();
         }
     }
 }

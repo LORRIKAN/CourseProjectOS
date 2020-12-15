@@ -48,6 +48,8 @@
             this.importMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportDataMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportDataAndResultMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitButt = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutProgramButt = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
@@ -89,9 +91,9 @@
             this.startConditionDataGridView.RowTemplate.Height = 28;
             this.startConditionDataGridView.Size = new System.Drawing.Size(479, 486);
             this.startConditionDataGridView.TabIndex = 0;
-            this.startConditionDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridView_CellValidating);
-            this.startConditionDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridView_UserDeletingRow);
-            this.startConditionDataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridView_KeyDown);
+            this.startConditionDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridViewCellValidating);
+            this.startConditionDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridViewUserDeletingRow);
+            this.startConditionDataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridViewKeyDown);
             // 
             // pageClmnStartDGV
             // 
@@ -139,9 +141,9 @@
             this.pagesToInsertDataGridView.RowTemplate.Height = 28;
             this.pagesToInsertDataGridView.Size = new System.Drawing.Size(479, 486);
             this.pagesToInsertDataGridView.TabIndex = 0;
-            this.pagesToInsertDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridView_CellValidating);
-            this.pagesToInsertDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridView_UserDeletingRow);
-            this.pagesToInsertDataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridView_KeyDown);
+            this.pagesToInsertDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DataGridViewCellValidating);
+            this.pagesToInsertDataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.DataGridViewUserDeletingRow);
+            this.pagesToInsertDataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridViewKeyDown);
             // 
             // pageClmnInsrtDGV
             // 
@@ -167,7 +169,7 @@
             this.nextStepButt.TabIndex = 3;
             this.nextStepButt.Text = "Следующий шаг";
             this.nextStepButt.UseVisualStyleBackColor = true;
-            this.nextStepButt.Click += new System.EventHandler(this.NextStepButt_Click);
+            this.nextStepButt.Click += new System.EventHandler(this.NextStepButtClick);
             // 
             // undoButt
             // 
@@ -178,7 +180,7 @@
             this.undoButt.TabIndex = 4;
             this.undoButt.Text = "Назад";
             this.undoButt.UseVisualStyleBackColor = true;
-            this.undoButt.Click += new System.EventHandler(this.UndoButt_Click);
+            this.undoButt.Click += new System.EventHandler(this.UndoButtClick);
             // 
             // executeButt
             // 
@@ -189,7 +191,7 @@
             this.executeButt.TabIndex = 6;
             this.executeButt.Text = "Выполнить";
             this.executeButt.UseVisualStyleBackColor = true;
-            this.executeButt.Click += new System.EventHandler(this.ExecuteButt_Click);
+            this.executeButt.Click += new System.EventHandler(this.ExecuteButtClick);
             // 
             // resetButt
             // 
@@ -200,7 +202,7 @@
             this.resetButt.TabIndex = 5;
             this.resetButt.Text = "Сброс";
             this.resetButt.UseVisualStyleBackColor = true;
-            this.resetButt.Click += new System.EventHandler(this.ResetButt_Click);
+            this.resetButt.Click += new System.EventHandler(this.ResetButtClick);
             // 
             // groupBox
             // 
@@ -232,14 +234,15 @@
             this.randButt.TabIndex = 7;
             this.randButt.Text = "Заполнить случайно";
             this.randButt.UseVisualStyleBackColor = true;
-            this.randButt.Click += new System.EventHandler(this.RandButt_Click);
+            this.randButt.Click += new System.EventHandler(this.RandButtClick);
             // 
             // menuStrip
             // 
             this.menuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileMenuStripItem});
+            this.fileMenuStripItem,
+            this.aboutProgramButt});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(1314, 33);
@@ -251,7 +254,8 @@
             this.fileMenuStripItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importMenuStripItem,
             this.exportDataMenuStripItem,
-            this.exportDataAndResultMenuStripItem});
+            this.exportDataAndResultMenuStripItem,
+            this.exitButt});
             this.fileMenuStripItem.Name = "fileMenuStripItem";
             this.fileMenuStripItem.Size = new System.Drawing.Size(69, 29);
             this.fileMenuStripItem.Text = "Файл";
@@ -261,21 +265,35 @@
             this.importMenuStripItem.Name = "importMenuStripItem";
             this.importMenuStripItem.Size = new System.Drawing.Size(423, 34);
             this.importMenuStripItem.Text = "Импорт из excel...";
-            this.importMenuStripItem.Click += new System.EventHandler(this.ImportMenuStripItem_Click);
+            this.importMenuStripItem.Click += new System.EventHandler(this.ImportMenuStripItemClick);
             // 
             // exportDataMenuStripItem
             // 
             this.exportDataMenuStripItem.Name = "exportDataMenuStripItem";
             this.exportDataMenuStripItem.Size = new System.Drawing.Size(423, 34);
             this.exportDataMenuStripItem.Text = "Экспорт данных в excel...";
-            this.exportDataMenuStripItem.Click += new System.EventHandler(this.ExportDataMenuStripItem_Click);
+            this.exportDataMenuStripItem.Click += new System.EventHandler(this.ExportDataMenuStripItemClick);
             // 
             // exportDataAndResultMenuStripItem
             // 
             this.exportDataAndResultMenuStripItem.Name = "exportDataAndResultMenuStripItem";
             this.exportDataAndResultMenuStripItem.Size = new System.Drawing.Size(423, 34);
             this.exportDataAndResultMenuStripItem.Text = "Экспорт данных и результата в excel...";
-            this.exportDataAndResultMenuStripItem.Click += new System.EventHandler(this.ExportDataAndResultMenuStripItem_Click);
+            this.exportDataAndResultMenuStripItem.Click += new System.EventHandler(this.ExportDataAndResultMenuStripItemClick);
+            // 
+            // exitButt
+            // 
+            this.exitButt.Name = "exitButt";
+            this.exitButt.Size = new System.Drawing.Size(423, 34);
+            this.exitButt.Text = "Выход";
+            this.exitButt.Click += new System.EventHandler(this.ExitButtClick);
+            // 
+            // aboutProgramButt
+            // 
+            this.aboutProgramButt.Name = "aboutProgramButt";
+            this.aboutProgramButt.Size = new System.Drawing.Size(153, 29);
+            this.aboutProgramButt.Text = "О программе...";
+            this.aboutProgramButt.Click += new System.EventHandler(this.AboutProgramButtClick);
             // 
             // saveFileDialog
             // 
@@ -301,7 +319,7 @@
             this.Controls.Add(this.groupBox1);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "MainForm";
-            this.Text = "Симуляция алгоритма FIFO";
+            this.Text = "Визуализация алгоритма FIFO";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.startConditionDataGridView)).EndInit();
@@ -339,6 +357,8 @@
         private System.Windows.Forms.ToolStripMenuItem exportDataAndResultMenuStripItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.ToolStripMenuItem exitButt;
+        private System.Windows.Forms.ToolStripMenuItem aboutProgramButt;
     }
 }
 
